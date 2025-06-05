@@ -9,7 +9,6 @@ class FloatingWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Modern Window Features
         self.setWindowTitle("Clipboard AI Helper")
         self.setWindowFlags(
             Qt.WindowStaysOnTopHint |
@@ -21,7 +20,7 @@ class FloatingWindow(QWidget):
             Qt.WindowCloseButtonHint
         )
 
-        self.setGeometry(300, 300, 500, 300)  # Initial size
+        self.setGeometry(300, 300, 500, 300)
         self.setMinimumSize(400, 200)
 
         self.init_ui()
@@ -29,12 +28,17 @@ class FloatingWindow(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        # Title area with close button
+        # Title bar with close and clear buttons
         title_bar = QHBoxLayout()
         title = QLabel("🧠 Clipboard AI Helper")
         title.setStyleSheet("font-size: 16px; font-weight: bold;")
         title_bar.addWidget(title)
         title_bar.addStretch()
+
+        clear_btn = QPushButton("🧹 Clear")
+        clear_btn.setFixedSize(60, 30)
+        clear_btn.clicked.connect(self.clear_content)
+        title_bar.addWidget(clear_btn)
 
         close_btn = QPushButton("✕")
         close_btn.setFixedSize(30, 30)
@@ -43,17 +47,24 @@ class FloatingWindow(QWidget):
 
         layout.addLayout(title_bar)
 
-        # Explanation area
+        # ✅ Create a QSplitter for resizable vertical areas
+        from PyQt5.QtWidgets import QSplitter
+        splitter = QSplitter(Qt.Vertical)
+
         self.explanation = QTextEdit()
         self.explanation.setPlaceholderText("Explanation will appear here...")
-        layout.addWidget(self.explanation)
+        splitter.addWidget(self.explanation)
 
-        # Fix suggestions area
         self.fixes = QTextEdit()
         self.fixes.setPlaceholderText("Fixes/suggestions...")
-        layout.addWidget(self.fixes)
+        splitter.addWidget(self.fixes)
 
-        # Resizing handle
+        # Optionally set initial splitter ratio
+        splitter.setSizes([200, 100])  # [top, bottom]
+
+        layout.addWidget(splitter)
+
+        # Resizing handle at bottom-right
         grip = QSizeGrip(self)
         layout.addWidget(grip, 0, Qt.AlignRight)
 
@@ -61,8 +72,12 @@ class FloatingWindow(QWidget):
         self.show()
 
     def update_content(self, explanation_text, fixes_text):
-        self.explanation.setText(explanation_text)
-        self.fixes.setText(fixes_text)
+        self.explanation.setHtml(explanation_text)
+        self.fixes.setHtml(fixes_text)
+
+    def clear_content(self):
+        self.explanation.clear()
+        self.fixes.clear()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

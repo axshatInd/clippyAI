@@ -1,10 +1,11 @@
-# main.py
 import sys
 import pyperclip
 import requests
+import markdown
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from ui.window import FloatingWindow
+from ui.prompt import PromptWindow
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
@@ -14,7 +15,7 @@ class ClipboardWatcher:
         self.last_clipboard = ""
 
         self.timer = QTimer()
-        self.timer.setInterval(1000)  # check every 1 second
+        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.check_clipboard)
         self.timer.start()
 
@@ -22,17 +23,28 @@ class ClipboardWatcher:
         current = pyperclip.paste()
         if current != self.last_clipboard and current.strip():
             self.last_clipboard = current
-            self.analyze_code(current)
+            self.ask_permission(current)
+
+    def ask_permission(self, copied_text):
+        self.prompt = PromptWindow(
+            on_yes=lambda: self.analyze_code(copied_text),
+            on_no=lambda: None
+        )
+        self.prompt.show()
 
     def analyze_code(self, code):
         try:
             res = requests.post(API_URL, json={"code": code})
             data = res.json()
-            explanation = data.get("explanation", "No explanation returned.")
-            fixes = data.get("fixes", "No fixes returned.")
-            self.window.update_content(explanation, fixes)
+            explanation_md = data.get("explanation", "No explanation returned.")
+            fixes_md = data.get("fixes", "No fixes returned.")
+            explanation_html = markdown.markdown(explanation_md)
+            fixes_html = markdown.markdown(fixes_md)
+            self.window.update_content(explanation_html, fixes_html)
+            self.window.show()
         except Exception as e:
-            self.window.update_content("Error contacting API.", str(e))
+            self.window.update_content("<b>Error contacting API.</b>", f"<pre>{str(e)}</pre>")
+            self.window.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
