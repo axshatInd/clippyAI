@@ -4,4 +4,5 @@ pyperclip
 requests
 fastapi
 uvicorn
-
+google-generativeai
+python-dotenv
