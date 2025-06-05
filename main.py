@@ -9,6 +9,23 @@ from ui.prompt import PromptWindow
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
+# ✅ HTML styling for code blocks
+HTML_STYLE = """
+<style>
+pre {
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+}
+code {
+    font-family: Consolas, monospace;
+}
+</style>
+"""
+
 class ClipboardWatcher:
     def __init__(self, window):
         self.window = window
@@ -38,10 +55,14 @@ class ClipboardWatcher:
             data = res.json()
             explanation_md = data.get("explanation", "No explanation returned.")
             fixes_md = data.get("fixes", "No fixes returned.")
-            explanation_html = markdown.markdown(explanation_md)
-            fixes_html = markdown.markdown(fixes_md)
+
+            # ✅ Convert markdown to HTML with code formatting
+            explanation_html = HTML_STYLE + markdown.markdown(explanation_md, extensions=["fenced_code"])
+            fixes_html = HTML_STYLE + markdown.markdown(fixes_md, extensions=["fenced_code"])
+
             self.window.update_content(explanation_html, fixes_html)
             self.window.show()
+
         except Exception as e:
             self.window.update_content("<b>Error contacting API.</b>", f"<pre>{str(e)}</pre>")
             self.window.show()
