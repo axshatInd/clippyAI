@@ -1,0 +1,2 @@
+uvicorn api.server:app --reload
+python main.py
