@@ -24,8 +24,9 @@ def analyze_code(input: CodeInput):
         {input.code}
 
         1. Explain what the code does.
-        2. Highlight any syntax or logical errors.
-        3. Suggest fixes or improvements if needed.
+        2. Explain the code line by line, mention the line taken from code in bold only for better visibility and understanding, explain the line ahead of it in normal text.
+        3. Highlight any syntax or logical errors.
+        4. Suggest fixes or improvements only if needed.
         """
 
         response = model.generate_content(prompt)

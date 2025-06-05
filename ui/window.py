@@ -9,7 +9,7 @@ class FloatingWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.current_theme = "dark"
+        self.current_theme = "dark"  # Default theme
 
         self.setWindowTitle("Clipboard AI Helper")
         self.setWindowFlags(
@@ -30,7 +30,7 @@ class FloatingWindow(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        # Title bar with close, clear, and theme toggle buttons
+        # Top bar
         title_bar = QHBoxLayout()
         title = QLabel("🧠 Clipboard AI Helper")
         title.setStyleSheet("font-size: 16px; font-weight: bold;")
@@ -54,7 +54,7 @@ class FloatingWindow(QWidget):
 
         layout.addLayout(title_bar)
 
-        # QSplitter for resizable vertical areas
+        # Split text areas
         splitter = QSplitter(Qt.Vertical)
 
         self.explanation = QTextEdit()
@@ -70,6 +70,7 @@ class FloatingWindow(QWidget):
         splitter.setSizes([200, 100])
         layout.addWidget(splitter)
 
+        # Resize grip
         grip = QSizeGrip(self)
         layout.addWidget(grip, 0, Qt.AlignRight)
 
@@ -138,6 +139,41 @@ class FloatingWindow(QWidget):
     def clear_content(self):
         self.explanation.clear()
         self.fixes.clear()
+
+    def current_theme_style(self):
+        # Called by main.py to apply correct HTML styling
+        if self.current_theme == "dark":
+            return """
+            <style>
+                pre {
+                    background-color: #1e1e1e;
+                    color: #dcdcdc;
+                    padding: 10px;
+                    border-radius: 5px;
+                    overflow-x: auto;
+                    font-family: Consolas, monospace;
+                }
+                code {
+                    font-family: Consolas, monospace;
+                }
+            </style>
+            """
+        else:
+            return """
+            <style>
+                pre {
+                    background-color: #f0f0f0;
+                    color: #000;
+                    padding: 10px;
+                    border-radius: 5px;
+                    overflow-x: auto;
+                    font-family: Consolas, monospace;
+                }
+                code {
+                    font-family: Consolas, monospace;
+                }
+            </style>
+            """
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

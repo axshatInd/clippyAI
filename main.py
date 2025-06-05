@@ -9,8 +9,24 @@ from ui.prompt import PromptWindow
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
-# ✅ HTML styling for code blocks
-HTML_STYLE = """
+# ✅ Theme-specific HTML styling for code blocks
+LIGHT_MODE_STYLE = """
+<style>
+pre {
+    background-color: #f0f0f0;
+    color: #000;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+}
+code {
+    font-family: Consolas, monospace;
+}
+</style>
+"""
+
+DARK_MODE_STYLE = """
 <style>
 pre {
     background-color: #1e1e1e;
@@ -56,15 +72,17 @@ class ClipboardWatcher:
             explanation_md = data.get("explanation", "No explanation returned.")
             fixes_md = data.get("fixes", "No fixes returned.")
 
-            # ✅ Convert markdown to HTML with code formatting
-            explanation_html = HTML_STYLE + markdown.markdown(explanation_md, extensions=["fenced_code"])
-            fixes_html = HTML_STYLE + markdown.markdown(fixes_md, extensions=["fenced_code"])
+            # ✅ Get current HTML style based on theme
+            theme_style = self.window.current_theme_style()
+            explanation_html = theme_style + markdown.markdown(explanation_md, extensions=["fenced_code"])
+            fixes_html = theme_style + markdown.markdown(fixes_md, extensions=["fenced_code"])
 
             self.window.update_content(explanation_html, fixes_html)
             self.window.show()
 
         except Exception as e:
-            self.window.update_content("<b>Error contacting API.</b>", f"<pre>{str(e)}</pre>")
+            error_html = f"<b>Error contacting API.</b><br><pre>{str(e)}</pre>"
+            self.window.update_content(error_html, "")
             self.window.show()
 
 if __name__ == "__main__":
