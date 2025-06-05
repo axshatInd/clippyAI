@@ -1,0 +1,7 @@
+# requirements.txt
+pyqt5
+pyperclip
+requests
+fastapi
+uvicorn
+
