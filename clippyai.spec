@@ -10,6 +10,7 @@ a = Analysis(
         ('.env', '.'),
         ('api', 'api'),
         ('ui', 'ui'),
+        ('api_key_manager.py', '.'),
     ],
     hiddenimports=[
         # Google AI

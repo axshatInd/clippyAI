@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (
     QPushButton, QHBoxLayout, QTextEdit, QSizeGrip, QSplitter
 )
 from PyQt5.QtCore import Qt
+# Add this import at the top
+from api_key_manager import APIKeyDialog
 
 class FloatingWindow(QWidget):
     def __init__(self):
@@ -41,6 +43,12 @@ class FloatingWindow(QWidget):
         self.theme_btn.setFixedSize(100, 30)
         self.theme_btn.clicked.connect(self.toggle_theme)
         title_bar.addWidget(self.theme_btn)
+
+        # In the init_ui method, add this button after the theme button:
+        settings_btn = QPushButton("⚙️ Settings")
+        settings_btn.setFixedSize(80, 30)
+        settings_btn.clicked.connect(self.show_settings)
+        title_bar.addWidget(settings_btn)
 
         clear_btn = QPushButton("🧹 Clear")
         clear_btn.setFixedSize(60, 30)
@@ -174,6 +182,13 @@ class FloatingWindow(QWidget):
                 }
             </style>
             """
+
+    # Add this method to the FloatingWindow class:
+    def show_settings(self):
+        """Show API key settings dialog"""
+        current_key = self.api_key_manager.load_api_key()
+        dialog = APIKeyDialog(current_key, is_first_run=False)
+        dialog.exec_()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
