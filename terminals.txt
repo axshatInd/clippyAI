@@ -1,2 +1,3 @@
 uvicorn api.server:app --reload
 python main.py
+pyinstaller --clean clippyai.spec

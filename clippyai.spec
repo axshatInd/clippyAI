@@ -4,23 +4,59 @@ block_cipher = None
 
 a = Analysis(
     ['main.py'],
-    pathex=[],
+    pathex=['.'],
     binaries=[],
     datas=[
-        ('.env', '.'),  # Include .env file
+        ('.env', '.'),
+        ('api', 'api'),
+        ('ui', 'ui'),
     ],
     hiddenimports=[
+        # Google AI
         'google.generativeai',
+        'google.generativeai.client',
+        'google.generativeai.types',
+        
+        # FastAPI & Uvicorn
         'fastapi',
+        'fastapi.applications',
         'uvicorn',
+        'uvicorn.main',
+        'uvicorn.server',
+        'uvicorn.logging',
+        'uvicorn.loops',
+        'uvicorn.loops.auto',
+        'uvicorn.protocols',
+        'uvicorn.protocols.http',
+        'uvicorn.protocols.http.auto',
+        'uvicorn.protocols.websockets',
+        'uvicorn.protocols.websockets.auto',
+        'uvicorn.lifespan',
+        'uvicorn.lifespan.on',
+        
+        # Pydantic
         'pydantic',
-        'pyperclip',
+        'pydantic.main',
+        'pydantic.fields',
+        
+        # Other dependencies
         'markdown',
+        'markdown.extensions',
+        'markdown.extensions.fenced_code',
         'requests',
         'dotenv',
+        'pyperclip',
+        
+        # PyQt5
         'PyQt5.QtCore',
         'PyQt5.QtWidgets',
-        'PyQt5.QtGui'
+        'PyQt5.QtGui',
+        
+        # Standard library
+        'subprocess',
+        'json',
+        'threading',
+        'multiprocessing'
     ],
     hookspath=[],
     hooksconfig={},
@@ -48,11 +84,10 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # No console window
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico'  # Add this if you have an icon file
 )

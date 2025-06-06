@@ -3,7 +3,7 @@ import os
 import pyperclip
 import requests
 import markdown
-import subprocess
+import threading
 import time
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
@@ -101,32 +101,30 @@ class ClipboardWatcher:
             self.window.update_content(error_html, "")
             self.window.show()
 
+def start_server():
+    """Start the FastAPI server in a separate thread"""
+    try:
+        import uvicorn
+        from api.server import app
+        uvicorn.run(app, host="127.0.0.1", port=8000, log_level="error")
+    except Exception as e:
+        print(f"Server failed to start: {e}")
+
 if __name__ == "__main__":
-    # ✅ Updated for PyInstaller
-    if getattr(sys, 'frozen', False):
-        # Running as compiled executable
-        server_script = get_resource_path(os.path.join("api", "server.py"))
-        server_process = subprocess.Popen(
-            [sys.executable, server_script],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-    else:
-        # Running in development
-        server_process = subprocess.Popen(
-            [sys.executable, os.path.join("api", "server.py")],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-
+    # ✅ Start FastAPI server in background thread (PyInstaller compatible)
+    server_thread = threading.Thread(target=start_server, daemon=True)
+    server_thread.start()
+    
     # Wait a bit to ensure server is ready
-    time.sleep(2)
-
+    time.sleep(3)
+    
     try:
         app = QApplication(sys.argv)
         window = FloatingWindow()
         watcher = ClipboardWatcher(window)
         sys.exit(app.exec_())
-    finally:
-        # ✅ Kill server on exit
-        server_process.terminate()
+    except Exception as e:
+        print(f"Application error: {e}")
+        # Only show input prompt if running in console mode
+        if hasattr(sys, '_getframe'):
+            input("Press Enter to exit...")
