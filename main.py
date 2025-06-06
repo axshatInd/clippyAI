@@ -11,8 +11,18 @@ from PyQt5.QtCore import QTimer
 from ui.window import FloatingWindow
 from ui.prompt import PromptWindow
 
+# ✅ Handle bundled vs development paths
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 # Load environment variables
-load_dotenv()
+load_dotenv(get_resource_path('.env'))
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
@@ -92,12 +102,22 @@ class ClipboardWatcher:
             self.window.show()
 
 if __name__ == "__main__":
-    # ✅ Start FastAPI server in background
-    server_process = subprocess.Popen(
-        [sys.executable, os.path.join("api", "server.py")],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+    # ✅ Updated for PyInstaller
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable
+        server_script = get_resource_path(os.path.join("api", "server.py"))
+        server_process = subprocess.Popen(
+            [sys.executable, server_script],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    else:
+        # Running in development
+        server_process = subprocess.Popen(
+            [sys.executable, os.path.join("api", "server.py")],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
     # Wait a bit to ensure server is ready
     time.sleep(2)
