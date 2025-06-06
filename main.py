@@ -1,11 +1,18 @@
 import sys
+import os
 import pyperclip
 import requests
 import markdown
+import subprocess
+import time
+from dotenv import load_dotenv
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from ui.window import FloatingWindow
 from ui.prompt import PromptWindow
+
+# Load environment variables
+load_dotenv()
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
@@ -72,7 +79,6 @@ class ClipboardWatcher:
             explanation_md = data.get("explanation", "No explanation returned.")
             fixes_md = data.get("fixes", "No fixes returned.")
 
-            # ✅ Get current HTML style based on theme
             theme_style = self.window.current_theme_style()
             explanation_html = theme_style + markdown.markdown(explanation_md, extensions=["fenced_code"])
             fixes_html = theme_style + markdown.markdown(fixes_md, extensions=["fenced_code"])
@@ -86,7 +92,21 @@ class ClipboardWatcher:
             self.window.show()
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = FloatingWindow()
-    watcher = ClipboardWatcher(window)
-    sys.exit(app.exec_())
+    # ✅ Start FastAPI server in background
+    server_process = subprocess.Popen(
+        [sys.executable, os.path.join("api", "server.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    # Wait a bit to ensure server is ready
+    time.sleep(2)
+
+    try:
+        app = QApplication(sys.argv)
+        window = FloatingWindow()
+        watcher = ClipboardWatcher(window)
+        sys.exit(app.exec_())
+    finally:
+        # ✅ Kill server on exit
+        server_process.terminate()

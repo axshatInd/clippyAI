@@ -4,8 +4,10 @@ from dotenv import load_dotenv
 import os
 import google.generativeai as genai
 
-# Load API key
+# ✅ Load environment variables
 load_dotenv()
+
+# ✅ Configure Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = FastAPI()
@@ -32,7 +34,6 @@ def analyze_code(input: CodeInput):
         response = model.generate_content(prompt)
         result = response.text.strip()
 
-        # Simple way to split response if it has explanation + fixes
         if "Fix" in result or "fix" in result:
             parts = result.split("\n\n", 1)
             explanation = parts[0]
@@ -51,3 +52,8 @@ def analyze_code(input: CodeInput):
             "explanation": "Failed to get response from Gemini.",
             "fixes": str(e)
         }
+
+# ✅ Allow server to run when started directly (for subprocess in main.py)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("api.server:app", host="127.0.0.1", port=8000, log_level="error")
