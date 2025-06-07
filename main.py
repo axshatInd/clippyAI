@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
 from ui.window import FloatingWindow
-from ui.prompt import PromptWindow
+from ui.prompt import PromptWindow, AdditionalInfoPromptWindow  # Updated import
 from api_key_manager import APIKeyManager, APIKeyDialog
 import resources_rc  # Import the compiled resource file
 
@@ -91,6 +91,7 @@ class ClipboardWatcher:
     def __init__(self, window):
         self.window = window
         self.last_clipboard = ""
+        self.current_copied_text = ""  # Store the copied text
 
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -101,19 +102,34 @@ class ClipboardWatcher:
         current = pyperclip.paste()
         if current != self.last_clipboard and current.strip():
             self.last_clipboard = current
+            self.current_copied_text = current  # Store for later use
             self.ask_permission(current)
 
     def ask_permission(self, copied_text):
         self.prompt = PromptWindow(
-            on_yes=lambda: self.analyze_code(copied_text),
+            on_yes=lambda: self.show_additional_info_prompt(),  # Updated callback
             on_no=lambda: None
         )
         self.prompt.show()
 
-    def analyze_code(self, code):
+    def show_additional_info_prompt(self):
+        """Show the additional information prompt window"""
+        self.additional_prompt = AdditionalInfoPromptWindow(
+            on_proceed=lambda additional_info: self.analyze_code_with_additional_info(additional_info)
+        )
+        self.additional_prompt.show()
+
+    def analyze_code_with_additional_info(self, additional_info):
+        """Analyze code with optional additional information"""
         try:
             print(f"📡 Sending request to: {API_URL}")
-            res = requests.post(API_URL, json={"code": code}, timeout=30)
+            
+            # Combine original text with additional info
+            combined_input = self.current_copied_text
+            if additional_info:
+                combined_input += f"\n\nAdditional Context: {additional_info}"
+            
+            res = requests.post(API_URL, json={"code": combined_input}, timeout=30)
             print(f"✅ API Response status: {res.status_code}")
             data = res.json()
             explanation_md = data.get("explanation", "No explanation returned.")
@@ -131,6 +147,13 @@ class ClipboardWatcher:
             error_html = f"<b>Error contacting API.</b><br><pre>{str(e)}</pre>"
             self.window.update_content(error_html, "")
             self.window.show()
+
+    # Keep the original analyze_code method as backup (not used now)
+    def analyze_code(self, code):
+        """Original analyze_code method - now replaced by analyze_code_with_additional_info"""
+        # This method is now replaced by analyze_code_with_additional_info
+        # Keeping it for backward compatibility
+        self.analyze_code_with_additional_info("")
 
 def start_server():
     """Start the FastAPI server in a separate thread"""
