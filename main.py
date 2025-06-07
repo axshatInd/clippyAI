@@ -30,9 +30,14 @@ import resources_rc  # Import the compiled resource file
 
 API_URL = "http://127.0.0.1:8000/analyze"
 
-# ✅ Theme-specific HTML styling for code blocks
+# ✅ Updated theme-specific HTML styling with larger fonts
 LIGHT_MODE_STYLE = """
 <style>
+body {
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
 pre {
     background-color: #f0f0f0;
     color: #000;
@@ -40,15 +45,27 @@ pre {
     border-radius: 5px;
     overflow-x: auto;
     font-family: Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.4;
 }
 code {
     font-family: Consolas, monospace;
+    font-size: 14px;
+}
+p, li, div {
+    font-size: 16px;
+    line-height: 1.5;
 }
 </style>
 """
 
 DARK_MODE_STYLE = """
 <style>
+body {
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+}
 pre {
     background-color: #1e1e1e;
     color: #dcdcdc;
@@ -56,9 +73,16 @@ pre {
     border-radius: 5px;
     overflow-x: auto;
     font-family: Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.4;
 }
 code {
     font-family: Consolas, monospace;
+    font-size: 14px;
+}
+p, li, div {
+    font-size: 16px;
+    line-height: 1.5;
 }
 </style>
 """

@@ -187,6 +187,11 @@ class FloatingWindow(QWidget):
         if self.current_theme == "dark":
             return """
             <style>
+                body {
+                    font-size: 16px;
+                    line-height: 1.6;
+                    font-family: Arial, sans-serif;
+                }
                 pre {
                     background-color: #2d2d2d; /* Slightly lighter than app background */
                     color: #e6e6e6;           /* Brighter text */
@@ -194,17 +199,34 @@ class FloatingWindow(QWidget):
                     border-radius: 5px;
                     overflow-x: auto;
                     font-family: Consolas, monospace;
+                    font-size: 16px; /* Increased font size */
+                    line-height: 1.5; /* Improved line height */
                     border: 1px solid #444;  /* Visible border for distinction */
                     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* Optional subtle glow */
                 }
                 code {
                     font-family: Consolas, monospace;
+                    font-size: 16px; /* Increased font size */
+                }
+                p, li, div, span {
+                    font-size: 16px;
+                    line-height: 1.6;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin: 10px 0;
                 }
             </style>
             """
         else:
             return """
             <style>
+                body {
+                    font-size: 16px;
+                    line-height: 1.6;
+                    font-family: Arial, sans-serif;
+                }
                 pre {
                     background-color: #f0f0f0;
                     color: #000;
@@ -212,9 +234,22 @@ class FloatingWindow(QWidget):
                     border-radius: 5px;
                     overflow-x: auto;
                     font-family: Consolas, monospace;
+                    font-size: 16px; /* Increased font size */
+                    line-height: 1.5; /* Improved line height */
+                    border: 1px solid #ddd;
                 }
                 code {
                     font-family: Consolas, monospace;
+                    font-size: 16px; /* Increased font size */
+                }
+                p, li, div, span {
+                    font-size: 16px;
+                    line-height: 1.6;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin: 10px 0;
                 }
             </style>
             """
