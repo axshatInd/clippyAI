@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QPushButton, QHBoxLayout, QTextEdit, QSizeGrip, QSplitter
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon  # Add this import for icon support
+from PyQt5.QtGui import QIcon, QPixmap  # Add QPixmap import for icon display
 from api_key_manager import APIKeyDialog
 
 class FloatingWindow(QWidget):
@@ -52,13 +52,37 @@ class FloatingWindow(QWidget):
         except Exception as e:
             print(f"❌ Error loading icon: {e}")
 
+    def get_icon_path(self):
+        """Get the path to the icon file"""
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            return os.path.join(os.path.dirname(sys.executable), 'icon.ico')
+        else:
+            # Running in development
+            return 'icon.ico'
+
     def init_ui(self):
         layout = QVBoxLayout()
 
         # Top bar
         title_bar = QHBoxLayout()
-        title = QLabel("🧠 ClippyAI")  # Updated title
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
+        
+        # Add icon display
+        icon_label = QLabel()
+        icon_path = self.get_icon_path()
+        if os.path.exists(icon_path):
+            pixmap = QPixmap(icon_path)
+            scaled_pixmap = pixmap.scaled(24, 24, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            icon_label.setPixmap(scaled_pixmap)
+        else:
+            # Fallback to emoji if icon not found
+            icon_label.setText("🧠")
+            icon_label.setStyleSheet("font-size: 16px;")
+        
+        title_bar.addWidget(icon_label)
+        
+        title = QLabel("ClippyAI")  # Updated title without emoji
+        title.setStyleSheet("font-size: 16px; font-weight: bold; margin-left: 8px;")
         title_bar.addWidget(title)
         title_bar.addStretch()
 
