@@ -1,10 +1,11 @@
 import sys
+import os
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel,
     QPushButton, QHBoxLayout, QTextEdit, QSizeGrip, QSplitter
 )
 from PyQt5.QtCore import Qt
-# Add this import at the top
+from PyQt5.QtGui import QIcon  # Add this import for icon support
 from api_key_manager import APIKeyDialog
 
 class FloatingWindow(QWidget):
@@ -13,7 +14,7 @@ class FloatingWindow(QWidget):
 
         self.current_theme = "dark"  # Default theme
 
-        self.setWindowTitle("Clipboard AI Helper")
+        self.setWindowTitle("ClippyAI - Code Analyzer")  # Updated title
         self.setWindowFlags(
             Qt.WindowStaysOnTopHint |
             Qt.Window |
@@ -24,17 +25,39 @@ class FloatingWindow(QWidget):
             Qt.WindowCloseButtonHint
         )
 
+        # Set window icon
+        self.set_window_icon()
+
         self.setGeometry(300, 300, 500, 300)
         self.setMinimumSize(400, 200)
 
         self.init_ui()
+
+    def set_window_icon(self):
+        """Set the window icon"""
+        try:
+            # Handle both development and PyInstaller paths
+            if getattr(sys, 'frozen', False):
+                # Running as compiled executable
+                icon_path = os.path.join(os.path.dirname(sys.executable), 'icon.ico')
+            else:
+                # Running in development
+                icon_path = 'icon.ico'
+            
+            if os.path.exists(icon_path):
+                self.setWindowIcon(QIcon(icon_path))
+                print(f"✅ Icon loaded from: {icon_path}")
+            else:
+                print(f"⚠️ Icon not found at: {icon_path}")
+        except Exception as e:
+            print(f"❌ Error loading icon: {e}")
 
     def init_ui(self):
         layout = QVBoxLayout()
 
         # Top bar
         title_bar = QHBoxLayout()
-        title = QLabel("🧠 Clipboard AI Helper")
+        title = QLabel("🧠 ClippyAI")  # Updated title
         title.setStyleSheet("font-size: 16px; font-weight: bold;")
         title_bar.addWidget(title)
         title_bar.addStretch()
@@ -44,7 +67,6 @@ class FloatingWindow(QWidget):
         self.theme_btn.clicked.connect(self.toggle_theme)
         title_bar.addWidget(self.theme_btn)
 
-        # In the init_ui method, add this button after the theme button:
         settings_btn = QPushButton("⚙️ Settings")
         settings_btn.setFixedSize(80, 30)
         settings_btn.clicked.connect(self.show_settings)
@@ -66,12 +88,12 @@ class FloatingWindow(QWidget):
         splitter = QSplitter(Qt.Vertical)
 
         self.explanation = QTextEdit()
-        self.explanation.setPlaceholderText("Explanation will appear here...")
+        self.explanation.setPlaceholderText("Code explanation will appear here...")
         self.explanation.setReadOnly(True)
         splitter.addWidget(self.explanation)
 
         self.fixes = QTextEdit()
-        self.fixes.setPlaceholderText("Fixes/suggestions...")
+        self.fixes.setPlaceholderText("Fixes and suggestions will appear here...")
         self.fixes.setReadOnly(True)
         splitter.addWidget(self.fixes)
 
@@ -183,7 +205,6 @@ class FloatingWindow(QWidget):
             </style>
             """
 
-    # Add this method to the FloatingWindow class:
     def show_settings(self):
         """Show API key settings dialog"""
         current_key = self.api_key_manager.load_api_key()

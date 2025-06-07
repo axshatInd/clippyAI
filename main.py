@@ -7,6 +7,7 @@ import threading
 import time
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QIcon  # Add this import for icon support
 from ui.window import FloatingWindow
 from ui.prompt import PromptWindow
 from api_key_manager import APIKeyManager, APIKeyDialog
@@ -151,6 +152,25 @@ def test_server_connection():
     print("❌ Server failed to start after 15 seconds")
     return False
 
+def set_application_icon(app):
+    """Set the application icon globally"""
+    try:
+        # Handle both development and PyInstaller paths
+        if getattr(sys, 'frozen', False):
+            # Running as compiled executable
+            icon_path = os.path.join(os.path.dirname(sys.executable), 'icon.ico')
+        else:
+            # Running in development
+            icon_path = 'icon.ico'
+        
+        if os.path.exists(icon_path):
+            app.setWindowIcon(QIcon(icon_path))
+            print(f"✅ Application icon set: {icon_path}")
+        else:
+            print(f"⚠️ Icon not found at: {icon_path}")
+    except Exception as e:
+        print(f"❌ Error setting application icon: {e}")
+
 if __name__ == "__main__":
     print("🎯 Starting ClippyAI application...")
     
@@ -176,6 +196,15 @@ if __name__ == "__main__":
         app = QApplication.instance()
         if app is None:
             app = QApplication(sys.argv)
+        
+        # Set application icon globally
+        set_application_icon(app)
+        
+        # Set application properties
+        app.setApplicationName("ClippyAI")
+        app.setApplicationDisplayName("ClippyAI - Code Analyzer")
+        app.setApplicationVersion("1.0.0")
+        app.setOrganizationName("ClippyAI")
         
         window = FloatingWindow()
         

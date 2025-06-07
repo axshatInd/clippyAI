@@ -1,3 +1,7 @@
 uvicorn api.server:app --reload
 python main.py
 pyinstaller --clean clippyai.spec
+
+for logo creations- ImageMagick
+magick clippylogo256.png -define icon:auto-resize="256,48,32,16" icon.ico
+magick identify icon.ico

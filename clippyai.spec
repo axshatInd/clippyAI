@@ -11,6 +11,7 @@ a = Analysis(
         ('api', 'api'),
         ('ui', 'ui'),
         ('api_key_manager.py', '.'),
+        ('icon.ico', '.'),
     ],
     hiddenimports=[
         # Google AI
@@ -91,5 +92,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='icon.ico'  # This sets the executable icon
 )
 
