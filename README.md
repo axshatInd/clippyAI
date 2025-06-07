@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Intelligent clipboard monitoring with AI-powered code analysis and LeetCode problem solving</strong>
+  <strong>Intelligent clipboard monitoring with AI-powered code analysis and problem solving</strong>
 </p>
 
 <p align="center">
