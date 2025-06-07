@@ -1,0 +1,98 @@
+PROPRIETARY SOFTWARE LICENSE
+
+ClippyAI - AI-Powered Code Analyzer
+Copyright (c) 2025 AKSHAT SAINI. All rights reserved.
+
+================================================================================
+
+IMPORTANT: READ CAREFULLY BEFORE USING THIS SOFTWARE
+
+This software and associated documentation files (the "Software") are proprietary 
+and confidential to AKSHAT SAINI ("Licensor").
+
+BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND 
+BY THE TERMS OF THIS AGREEMENT. IF YOU DO NOT AGREE TO THE TERMS OF THIS 
+AGREEMENT, DO NOT INSTALL OR USE THE SOFTWARE.
+
+================================================================================
+
+1. GRANT OF LICENSE
+
+Subject to the terms and conditions of this Agreement, Licensor grants you a 
+limited, non-exclusive, non-transferable, revocable license to use the Software 
+solely for your personal, non-commercial use.
+
+2. RESTRICTIONS
+
+You may NOT:
+a) Copy, modify, adapt, translate, or create derivative works of the Software
+b) Reverse engineer, disassemble, decompile, or otherwise attempt to derive 
+   the source code of the Software
+c) Distribute, sell, lease, rent, lend, or sublicense the Software to any third party
+d) Remove or alter any proprietary notices, labels, or marks on the Software
+e) Use the Software for any commercial purposes without explicit written permission
+f) Share your license or allow others to use your copy of the Software
+g) Publish, post, or otherwise make available any part of the Software online
+
+3. OWNERSHIP
+
+The Software is licensed, not sold. Licensor retains all right, title, and 
+interest in and to the Software, including all intellectual property rights. 
+This Agreement does not grant you any rights to trademarks, service marks, 
+or trade names of Licensor.
+
+4. TERMINATION
+
+This license is effective until terminated. Your rights under this license will 
+terminate automatically without notice if you fail to comply with any term of 
+this Agreement. Upon termination, you must cease all use of the Software and 
+destroy all copies in your possession.
+
+5. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. THE ENTIRE RISK AS 
+TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH YOU.
+
+6. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, 
+OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES 
+FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS 
+INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR 
+INABILITY TO USE THE SOFTWARE.
+
+7. INDEMNIFICATION
+
+You agree to indemnify and hold harmless Licensor from and against any claims, 
+actions, or demands, including reasonable legal fees, alleging or resulting 
+from your use of the Software or your violation of this Agreement.
+
+8. GOVERNING LAW
+
+This Agreement shall be governed by and construed in accordance with the laws 
+of India, without regard to its conflict of law principles.
+
+9. ENTIRE AGREEMENT
+
+This Agreement constitutes the entire agreement between you and Licensor 
+regarding the Software and supersedes all prior or contemporaneous 
+understandings regarding such subject matter.
+
+10. CONTACT INFORMATION
+
+For licensing inquiries, permissions, or questions about this Agreement, 
+please contact:
+
+AKSHAT SAINI
+axshat.ind@gmail.com
+
+================================================================================
+
+ACKNOWLEDGMENT
+
+BY USING THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS AGREEMENT, 
+UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND CONDITIONS.
+
+Last Updated: June 2025
