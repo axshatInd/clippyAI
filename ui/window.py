@@ -188,12 +188,14 @@ class FloatingWindow(QWidget):
             return """
             <style>
                 pre {
-                    background-color: #1e1e1e;
-                    color: #dcdcdc;
+                    background-color: #2d2d2d; /* Slightly lighter than app background */
+                    color: #e6e6e6;           /* Brighter text */
                     padding: 10px;
                     border-radius: 5px;
                     overflow-x: auto;
                     font-family: Consolas, monospace;
+                    border: 1px solid #444;  /* Visible border for distinction */
+                    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* Optional subtle glow */
                 }
                 code {
                     font-family: Consolas, monospace;

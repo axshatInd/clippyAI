@@ -1,5 +1,20 @@
 import sys
 import os
+
+# ✅ Fix for PyInstaller console=False with FastAPI/Uvicorn
+if getattr(sys, 'frozen', False):
+    # Running as compiled executable
+    import io
+    
+    # Redirect stdout and stderr to prevent Uvicorn logging errors
+    sys.stdout = io.StringIO()
+    sys.stderr = io.StringIO()
+    
+    # Alternative: Redirect to a log file if you want to keep logs
+    # log_file = os.path.join(os.path.dirname(sys.executable), 'app.log')
+    # sys.stdout = open(log_file, 'w')
+    # sys.stderr = sys.stdout
+    
 import pyperclip
 import requests
 import markdown
