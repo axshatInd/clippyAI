@@ -29,7 +29,7 @@ class FloatingWindow(QWidget):
         # Set window icon from embedded resource
         self.set_window_icon()
 
-        self.setGeometry(300, 300, 500, 300)
+        self.setGeometry(300, 300, 700, 420)  # Changed from (300, 300, 500, 300)
         self.setMinimumSize(400, 200)
 
         self.init_ui()
@@ -109,7 +109,7 @@ class FloatingWindow(QWidget):
         self.fixes.setReadOnly(True)
         splitter.addWidget(self.fixes)
 
-        splitter.setSizes([200, 100])
+        splitter.setSizes([120, 180])  # Changed from [200, 100]
         layout.addWidget(splitter)
 
         # Resize grip
