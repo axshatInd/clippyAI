@@ -11,6 +11,7 @@ a = Analysis(
         ('api', 'api'),
         ('ui', 'ui'),
         ('api_key_manager.py', '.'),
+        ('resources_rc.py', '.'),  # Added for embedded icon resource
         ('icon.ico', '.'),
     ],
     hiddenimports=[
@@ -94,4 +95,3 @@ exe = EXE(
     entitlements_file=None,
     icon='icon.ico'  # This sets the executable icon
 )
-

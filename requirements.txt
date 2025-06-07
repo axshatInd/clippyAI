@@ -1,4 +1,4 @@
-# requirements.txt
+# Core application dependencies
 pyqt5
 pyperclip
 requests
@@ -6,3 +6,18 @@ fastapi
 uvicorn
 google-generativeai
 python-dotenv
+
+# Additional dependencies for markdown rendering
+markdown
+
+# FastAPI/Uvicorn dependencies (may be auto-installed but explicit is better)
+pydantic
+starlette
+anyio
+sniffio
+httptools
+websockets
+uvloop
+watchfiles
+click
+typing-extensions

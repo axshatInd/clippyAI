@@ -5,8 +5,9 @@ from PyQt5.QtWidgets import (
     QPushButton, QHBoxLayout, QTextEdit, QSizeGrip, QSplitter
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QPixmap  # Add QPixmap import for icon display
+from PyQt5.QtGui import QIcon, QPixmap
 from api_key_manager import APIKeyDialog
+import resources_rc  # Import the compiled resource file
 
 class FloatingWindow(QWidget):
     def __init__(self):
@@ -14,7 +15,7 @@ class FloatingWindow(QWidget):
 
         self.current_theme = "dark"  # Default theme
 
-        self.setWindowTitle("ClippyAI - Code Analyzer")  # Updated title
+        self.setWindowTitle("ClippyAI - Code Analyzer")
         self.setWindowFlags(
             Qt.WindowStaysOnTopHint |
             Qt.Window |
@@ -25,7 +26,7 @@ class FloatingWindow(QWidget):
             Qt.WindowCloseButtonHint
         )
 
-        # Set window icon
+        # Set window icon from embedded resource
         self.set_window_icon()
 
         self.setGeometry(300, 300, 500, 300)
@@ -34,32 +35,14 @@ class FloatingWindow(QWidget):
         self.init_ui()
 
     def set_window_icon(self):
-        """Set the window icon"""
+        """Set the window icon from embedded resource"""
         try:
-            # Handle both development and PyInstaller paths
-            if getattr(sys, 'frozen', False):
-                # Running as compiled executable
-                icon_path = os.path.join(os.path.dirname(sys.executable), 'icon.ico')
-            else:
-                # Running in development
-                icon_path = 'icon.ico'
-            
-            if os.path.exists(icon_path):
-                self.setWindowIcon(QIcon(icon_path))
-                print(f"✅ Icon loaded from: {icon_path}")
-            else:
-                print(f"⚠️ Icon not found at: {icon_path}")
+            # Load icon from Qt resource system
+            icon = QIcon(":/icon.ico")
+            self.setWindowIcon(icon)
+            print("✅ Window icon loaded from embedded resource")
         except Exception as e:
-            print(f"❌ Error loading icon: {e}")
-
-    def get_icon_path(self):
-        """Get the path to the icon file"""
-        if getattr(sys, 'frozen', False):
-            # Running as compiled executable
-            return os.path.join(os.path.dirname(sys.executable), 'icon.ico')
-        else:
-            # Running in development
-            return 'icon.ico'
+            print(f"❌ Error loading embedded window icon: {e}")
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -67,21 +50,26 @@ class FloatingWindow(QWidget):
         # Top bar
         title_bar = QHBoxLayout()
         
-        # Add icon display
+        # Add icon display from embedded resource
         icon_label = QLabel()
-        icon_path = self.get_icon_path()
-        if os.path.exists(icon_path):
-            pixmap = QPixmap(icon_path)
-            scaled_pixmap = pixmap.scaled(24, 24, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            icon_label.setPixmap(scaled_pixmap)
-        else:
-            # Fallback to emoji if icon not found
+        try:
+            # Load pixmap from Qt resource system
+            pixmap = QPixmap(":/icon.ico")
+            if not pixmap.isNull():
+                scaled_pixmap = pixmap.scaled(24, 24, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                icon_label.setPixmap(scaled_pixmap)
+                print("✅ Title icon loaded from embedded resource")
+            else:
+                raise Exception("Pixmap is null")
+        except Exception as e:
+            # Fallback to emoji if resource not found
             icon_label.setText("🧠")
             icon_label.setStyleSheet("font-size: 16px;")
+            print(f"⚠️ Using fallback emoji for title icon: {e}")
         
         title_bar.addWidget(icon_label)
         
-        title = QLabel("ClippyAI")  # Updated title without emoji
+        title = QLabel("ClippyAI")
         title.setStyleSheet("font-size: 16px; font-weight: bold; margin-left: 8px;")
         title_bar.addWidget(title)
         title_bar.addStretch()

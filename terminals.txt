@@ -5,3 +5,6 @@ pyinstaller --clean clippyai.spec
 for logo creations- ImageMagick
 magick clippylogo256.png -define icon:auto-resize="256,48,32,16" icon.ico
 magick identify icon.ico
+
+resource file creation - 
+pyrcc5 resources.qrc -o resources_rc.py
