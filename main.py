@@ -24,11 +24,13 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
 from ui.window import FloatingWindow
-from ui.prompt import PromptWindow, AdditionalInfoPromptWindow  # Updated import
+from ui.prompt import PromptWindow, AdditionalInfoPromptWindow
 from api_key_manager import APIKeyManager, APIKeyDialog
+from chat_history import ConversationManager
 import resources_rc  # Import the compiled resource file
 
 API_URL = "http://127.0.0.1:8000/analyze"
+CHAT_URL = "http://127.0.0.1:8000/chat"
 
 # ✅ Updated theme-specific HTML styling with larger fonts
 LIGHT_MODE_STYLE = """
@@ -91,7 +93,11 @@ class ClipboardWatcher:
     def __init__(self, window):
         self.window = window
         self.last_clipboard = ""
-        self.current_copied_text = ""  # Store the copied text
+        self.current_copied_text = ""
+        self.current_session_id = None
+
+        # Set up the callback for chat responses
+        self.window.get_chat_response_callback = self.get_chat_response
 
         self.timer = QTimer()
         self.timer.setInterval(1000)
@@ -102,12 +108,12 @@ class ClipboardWatcher:
         current = pyperclip.paste()
         if current != self.last_clipboard and current.strip():
             self.last_clipboard = current
-            self.current_copied_text = current  # Store for later use
+            self.current_copied_text = current
             self.ask_permission(current)
 
     def ask_permission(self, copied_text):
         self.prompt = PromptWindow(
-            on_yes=lambda: self.show_additional_info_prompt(),  # Updated callback
+            on_yes=lambda: self.show_additional_info_prompt(),
             on_no=lambda: None
         )
         self.prompt.show()
@@ -120,33 +126,89 @@ class ClipboardWatcher:
         self.additional_prompt.show()
 
     def analyze_code_with_additional_info(self, additional_info):
-        """Analyze code with optional additional information"""
+        """Enhanced to start a conversation session"""
         try:
             print(f"📡 Sending request to: {API_URL}")
+            
+            # Start new conversation session
+            self.current_session_id = self.window.conversation_manager.start_new_session(
+                self.current_copied_text + (f"\n\nAdditional Context: {additional_info}" if additional_info else "")
+            )
             
             # Combine original text with additional info
             combined_input = self.current_copied_text
             if additional_info:
                 combined_input += f"\n\nAdditional Context: {additional_info}"
             
-            res = requests.post(API_URL, json={"code": combined_input}, timeout=30)
+            # Send initial analysis request
+            res = requests.post(API_URL, json={
+                "code": combined_input,
+                "session_id": self.current_session_id,
+                "is_followup": False
+            }, timeout=30)
+            
             print(f"✅ API Response status: {res.status_code}")
             data = res.json()
             explanation_md = data.get("explanation", "No explanation returned.")
             fixes_md = data.get("fixes", "No fixes returned.")
-
+            
+            # Add AI response to conversation
+            self.window.conversation_manager.add_message("assistant", explanation_md + "\n\n" + fixes_md)
+            
+            # Display results
             theme_style = self.window.current_theme_style()
             explanation_html = theme_style + markdown.markdown(explanation_md, extensions=["fenced_code"])
             fixes_html = theme_style + markdown.markdown(fixes_md, extensions=["fenced_code"])
-
+            
             self.window.update_content(explanation_html, fixes_html)
+            
+            # Initialize chat with welcome message
+            self.window.add_chat_message("ClippyAI", "Analysis complete! 🎉\n\nFeel free to:\n• Report any LeetCode errors\n• Ask for improvements\n• Request explanations\n• Debug issues", "#2196F3")
+            
             self.window.show()
-
+            
         except Exception as e:
             print(f"❌ API Error: {e}")
             error_html = f"<b>Error contacting API.</b><br><pre>{str(e)}</pre>"
             self.window.update_content(error_html, "")
             self.window.show()
+
+    def get_chat_response(self):
+        """Get AI response for chat message"""
+        if not self.current_session_id:
+            self.window.add_chat_message("ClippyAI", "Please start by copying some code first!", "#f44336")
+            return
+            
+        try:
+            # Get conversation context
+            context = self.window.conversation_manager.get_conversation_context()
+            
+            # Get the last user message
+            last_message = context[-1]["content"] if context else ""
+            
+            print(f"💬 Sending chat request to: {CHAT_URL}")
+            
+            res = requests.post(CHAT_URL, json={
+                "code": last_message,
+                "session_id": self.current_session_id,
+                "is_followup": True,
+                "conversation_context": context
+            }, timeout=30)
+            
+            print(f"✅ Chat Response status: {res.status_code}")
+            data = res.json()
+            ai_response = data.get("chat_response", "Sorry, I couldn't process that.")
+            
+            # Add AI response to conversation manager
+            self.window.conversation_manager.add_message("assistant", ai_response)
+            
+            # Display in chat with markdown formatting
+            formatted_response = markdown.markdown(ai_response, extensions=["fenced_code"])
+            self.window.add_chat_message("ClippyAI", formatted_response, "#2196F3")
+            
+        except Exception as e:
+            print(f"❌ Chat Error: {e}")
+            self.window.add_chat_message("ClippyAI", f"Error: {str(e)}", "#f44336")
 
     # Keep the original analyze_code method as backup (not used now)
     def analyze_code(self, code):
@@ -272,7 +334,7 @@ if __name__ == "__main__":
         # Set application properties
         app.setApplicationName("ClippyAI")
         app.setApplicationDisplayName("ClippyAI - Code Analyzer")
-        app.setApplicationVersion("1.0.0")
+        app.setApplicationVersion("2.0.0")  # Updated to v2.0.0 for chat feature
         app.setOrganizationName("ClippyAI")
         
         window = FloatingWindow()
