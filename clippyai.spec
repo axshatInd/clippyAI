@@ -11,6 +11,7 @@ a = Analysis(
         ('api', 'api'),
         ('ui', 'ui'),
         ('api_key_manager.py', '.'),
+        ('chat_history.py', '.'),  # Added for conversational memory
         ('resources_rc.py', '.'),  # Added for embedded icon resource
         ('icon.ico', '.'),
     ],
@@ -59,7 +60,10 @@ a = Analysis(
         'subprocess',
         'json',
         'threading',
-        'multiprocessing'
+        'multiprocessing',
+        'datetime',  # Added for chat timestamps
+        'uuid',      # Added for session ID generation
+        'dataclasses'  # Added for ChatMessage dataclass
     ],
     hookspath=[],
     hooksconfig={},
@@ -87,7 +91,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # ✅ Change to True for debugging
+    console=False,  # Production setting for clean launch
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
