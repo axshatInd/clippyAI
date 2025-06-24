@@ -155,7 +155,7 @@ class FloatingWindow(QWidget):
         # Chat history display
         self.chat_history = QTextEdit()
         self.chat_history.setReadOnly(True)
-        self.chat_history.setPlaceholderText("Continue the conversation here...\n\nAfter initial analysis, you can:\n• Report LeetCode errors\n• Ask for improvements\n• Request explanations\n• Debug issues")
+        self.chat_history.setPlaceholderText("Continue the conversation here...\n\nAfter initial analysis, you can:\n• Report errors\n• Ask for improvements\n• Request explanations\n• Debug issues")
         chat_layout.addWidget(self.chat_history)
 
         # Chat input area
